@@ -2,12 +2,10 @@ package com.tourguide.user.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.tourguide.user.model.User;
+import com.tourguide.user.dto.ChangePasswordDto;
+import com.tourguide.user.dto.LoginDto;
 import com.tourguide.user.service.AuthenticationService;
 
 @RestController
@@ -22,24 +20,26 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> authenticate(@RequestBody User user) {
-        // Here you would typically return a JWT or similar authentication token,
-        // not the user object itself
-        boolean isAuthenticated = authenticationService.authenticate(user.getUsername(), user.getPassword());
+    public ResponseEntity<String> authenticate(@RequestBody LoginDto loginDto) {
+        boolean isAuthenticated = authenticationService.authenticate(loginDto.getUsername(), loginDto.getPassword());
         if (isAuthenticated) {
-            // return token
-            return ResponseEntity.ok(new User());
+            // Here you would generate and return a JWT or similar authentication token
+            return ResponseEntity.ok("Logged in successfully");
         } else {
             return ResponseEntity.status(401).build();
         }
     }
 
     @PostMapping("/change-password")
-    public ResponseEntity<Void> changePassword(@RequestBody User user, String newPassword) {
-        // This method would need to be secured to only allow the authenticated user 
-        // or an admin to access it. You would also typically require the old password 
-        // to be submitted along with the new one.
-        authenticationService.changePassword(user.getId(), newPassword);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Void> changePassword(@RequestBody ChangePasswordDto changePasswordDto) {
+        // This method should be secured to only allow the authenticated user 
+        // or an admin to access it.
+        boolean isAuthenticated = authenticationService.authenticate(changePasswordDto.getUsername(), changePasswordDto.getOldPassword());
+        if (isAuthenticated) {
+            authenticationService.changePassword(changePasswordDto.getId(), changePasswordDto.getNewPassword());
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.status(401).build();
+        }
     }
 }
