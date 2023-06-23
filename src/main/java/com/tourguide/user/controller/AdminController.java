@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tourguide.user.model.User;
-import com.tourguide.user.model.Role;
+import com.tourguide.user.enums.Role;
 import com.tourguide.user.service.AdminService;
 
 @RestController

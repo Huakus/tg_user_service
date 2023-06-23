@@ -1,6 +1,6 @@
 package com.tourguide.user.service;
 
-import com.tourguide.user.model.Role;
+import com.tourguide.user.enums.Role;
 
 public interface AdminService {
     void addRole(Long userId, Role role);
