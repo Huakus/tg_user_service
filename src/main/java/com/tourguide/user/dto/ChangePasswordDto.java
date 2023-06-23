@@ -12,5 +12,4 @@ public class ChangePasswordDto {
     private String username;
     private String oldPassword;
     private String newPassword;
-    // getters and setters
 }
