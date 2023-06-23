@@ -1,7 +1,6 @@
 package com.tourguide.user.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,10 +32,9 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        Optional<User> user = userService.getUserById(id);
-        return user.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    @GetMapping("/{uuid}")
+    public ResponseEntity<User> getUserById(@PathVariable String uuid) {
+        return ResponseEntity.ok(userService.getUserByUuid(uuid));
     }
 
     @PostMapping
@@ -44,21 +42,15 @@ public class UserController {
         return userService.createUser(user);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
-        if (!userService.getUserById(id).isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-        user.setId(id);
+    @PutMapping("/{uuid}")
+    public ResponseEntity<User> updateUser(@PathVariable String uuid, @RequestBody User user) {
+        user.setUuid(uuid);
         return ResponseEntity.ok(userService.updateUser(user));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        if (!userService.getUserById(id).isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-        userService.deleteUser(id);
+    @DeleteMapping("/{uuid}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String uuid) {
+        userService.deleteUser(uuid);
         return ResponseEntity.noContent().build();
     }
 }
