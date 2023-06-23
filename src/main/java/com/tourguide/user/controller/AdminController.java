@@ -2,6 +2,7 @@ package com.tourguide.user.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,14 +23,14 @@ public class AdminController {
         this.adminService = adminService;
     }
 
-    @PostMapping("/add-role")
+    @PostMapping("/role")
     public ResponseEntity<Void> addRole(@RequestBody User user, Role role) {
         // This method would need to be secured to only allow an admin to access it.
         adminService.addRole(user.getId(), role);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/remove-role")
+    @DeleteMapping("/role")
     public ResponseEntity<Void> removeRole(@RequestBody User user, Role role) {
         // This method would need to be secured to only allow an admin to access it.
         adminService.removeRole(user.getId(), role);
