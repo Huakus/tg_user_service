@@ -27,8 +27,6 @@ This project is implemented using the following technologies:
 
 ## Installation and Setup
 
-## Installation and Setup
-
 To setup the `tg_user_service` project for local development, follow these steps:
 
 1. **Install Java**
@@ -75,22 +73,64 @@ Please ensure that you have the necessary permissions to install and run these s
 
 ## API Endpoints
 
-Here are some of the endpoints in the application:
+**AdminController**:
+
+```
+1. HTTP verb: POST, Endpoint: /admin/add-role
+   - Explanation: Add a role to a user.
+   - Parameters: User object (in the request body), Role object
+   - Sample Request: POST /admin/add-role
+   - Sample Response: ResponseEntity with no content (status 204)
+```
+
+**AuthenticationController**:
+
+```
+1. HTTP verb: POST, Endpoint: /auth/login
+   - Explanation: Authenticate a user.
+   - Parameters: User object (in the request body)
+   - Sample Request: POST /auth/login
+   - Sample Response: ResponseEntity with User object (status 200) or ResponseEntity with status 401
+
+2. HTTP verb: POST, Endpoint: /auth/change-password
+   - Explanation: Change a user's password.
+   - Parameters: User object (in the request body), new password (as a string)
+   - Sample Request: POST /auth/change-password
+   - Sample Response: ResponseEntity with no content (status 204)
+```
+
+**UserController**:
 
 ```
 1. HTTP verb: GET, Endpoint: /users
    - Explanation: Get all users.
    - Parameters: None
    - Sample Request: GET /users
-   - Sample Response: [array of User objects]
+   - Sample Response: List of User objects
 
 2. HTTP verb: GET, Endpoint: /users/{id}
    - Explanation: Get a user by ID.
    - Parameters: ID (path variable)
    - Sample Request: GET /users/1
-   - Sample Response: User object or 404 error
+   - Sample Response: ResponseEntity with User object (status 200) or ResponseEntity with status 404
 
-(Other endpoints are also available but need to be documented)
+3. HTTP verb: POST, Endpoint: /users
+   - Explanation: Create a user.
+   - Parameters: User object (in the request body)
+   - Sample Request: POST /users
+   - Sample Response: User object
+
+4. HTTP verb: PUT, Endpoint: /users/{id}
+   - Explanation: Update a user.
+   - Parameters: ID (path variable), User object (in the request body)
+   - Sample Request: PUT /users/1
+   - Sample Response: ResponseEntity with User object (status 200) or ResponseEntity with status 404
+
+5. HTTP verb: DELETE, Endpoint: /users/{id}
+   - Explanation: Delete a user.
+   - Parameters: ID (path variable)
+   - Sample Request: DELETE /users/1
+   - Sample Response: ResponseEntity with no content (status 204) or ResponseEntity with status 404
 ```
 
 ## Testing
