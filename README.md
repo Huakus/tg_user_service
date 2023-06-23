@@ -81,6 +81,12 @@ Please ensure that you have the necessary permissions to install and run these s
    - Parameters: User object (in the request body), Role object
    - Sample Request: POST /admin/add-role
    - Sample Response: ResponseEntity with no content (status 204)
+
+2. HTTP verb: POST, Endpoint: /admin/addremove-role
+   - Explanation: Remove a role from a user.
+   - Parameters: User object (in the request body), Role object
+   - Sample Request: POST /admin/remove-role
+   - Sample Response: ResponseEntity with no content (status 204)
 ```
 
 **AuthenticationController**:
