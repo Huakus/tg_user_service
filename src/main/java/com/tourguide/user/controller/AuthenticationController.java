@@ -8,38 +8,22 @@ import com.tourguide.user.dto.ChangePasswordDto;
 import com.tourguide.user.dto.LoginDto;
 import com.tourguide.user.service.AuthenticationService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
+@RequiredArgsConstructor
 public class AuthenticationController {
 
-    private final AuthenticationService authenticationService;
+    private final AuthenticationService service;
 
-    @Autowired
-    public AuthenticationController(AuthenticationService authenticationService) {
-        this.authenticationService = authenticationService;
+    @PostMapping("/register")
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegistrationRequest request) {
+      return ResponseEntity.ok(service.register(request));
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> authenticate(@RequestBody LoginDto loginDto) {
-        boolean isAuthenticated = authenticationService.authenticate(loginDto.getUsername(), loginDto.getPassword());
-        if (isAuthenticated) {
-            // Here you would generate and return a JWT or similar authentication token
-            return ResponseEntity.ok("Logged in successfully");
-        } else {
-            return ResponseEntity.status(401).build();
-        }
-    }
-
-    @PostMapping("/change-password")
-    public ResponseEntity<Void> changePassword(@RequestBody ChangePasswordDto changePasswordDto) {
-        // This method should be secured to only allow the authenticated user 
-        // or an admin to access it.
-        boolean isAuthenticated = authenticationService.authenticate(changePasswordDto.getUsername(), changePasswordDto.getOldPassword());
-        if (isAuthenticated) {
-            authenticationService.changePassword(changePasswordDto.getId(), changePasswordDto.getNewPassword());
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.status(401).build();
-        }
+    @PostMapping("/authenticate")
+    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
+      return ResponseEntity.ok(service.authenticate(request));
     }
 }

@@ -1,54 +1,56 @@
 package com.tourguide.user.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
+import com.tourguide.user.config.JwtService;
+import com.tourguide.user.controller.AuthenticationRequest;
+import com.tourguide.user.controller.AuthenticationResponse;
+import com.tourguide.user.controller.RegistrationRequest;
+import com.tourguide.user.enums.Role;
 import com.tourguide.user.model.User;
 import com.tourguide.user.repository.UserRepository;
 import com.tourguide.user.service.AuthenticationService;
 
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService{
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-
-    @Autowired
-    public AuthenticationServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
-    }
-
+    
     @Override
-    public void changePassword(Long id, String newPassword) {
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("No user found with id: " + id));
-        
-        // encode the new password
-        String encodedPassword = passwordEncoder.encode(newPassword);
-        user.setPassword(encodedPassword);
+    public AuthenticationResponse register(RegistrationRequest request) {
+        var user = User.builder()
+            .username(request.getUsername())
+            .email(request.getEmail())
+            .password(passwordEncoder.encode(request.getPassword()))
+            .role(Role.USER)
+            .build();
 
         userRepository.save(user);
+
+        var jwtToken = jwtService.generateToken(user);
+        return AuthenticationResponse.builder()
+            .token(jwtToken)
+            .build();
     }
 
     @Override
-    public boolean authenticate(String username, String password) {
-        try {
-            // Create an authentication token using the provided username and password
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-            
-            // Attempt to authenticate the user
-            Authentication authentication = authenticationManager.authenticate(authenticationToken);
-            
-            // If successful, return true
-            return authentication.isAuthenticated();
-        } catch (AuthenticationException e) {
-            // If any exception occurs during authentication, return false
-            return false;
-        }
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+
+        var user = userRepository.findByUsername(request.getUsername());
+
+        var jwtToken = jwtService.generateToken(user);
+        return AuthenticationResponse.builder()
+            .token(jwtToken)
+            .build();
     }
 }

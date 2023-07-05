@@ -21,14 +21,14 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void addRole(Long userId, Role role) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("No user found with id: " + userId));
-        user.getRoles().add(role);
+        user.setRole(role);
         userRepository.save(user);
     }
 
     @Override
     public void removeRole(Long userId, Role role) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("No user found with id: " + userId));
-        user.getRoles().remove(role);
+        user.setRole(role);
         userRepository.save(user);
     }
 }
